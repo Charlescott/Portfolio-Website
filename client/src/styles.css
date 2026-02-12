@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+:root {
+  --ink: #171a1f;
+  --bg: #f6f2ea;
+  --panel: #fffdf9;
+  --line: #dfd8cc;
+  --music: #c4541f;
+  --engineering: #1f6772;
+  --muted: #4f5560;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 20% 10%, #f3d6b9 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, #cbe4e8 0%, transparent 36%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Fraunces', serif;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p,
+li {
+  line-height: 1.6;
+}
+
+.container {
+  width: min(1120px, 92%);
+  margin: 0 auto;
+}
+
+.nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--bg) 82%, white);
+}
+
+.nav {
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links .active {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.hero {
+  padding: 5rem 0 2rem;
+  animation: fade-up 0.5s ease;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 3.9rem);
+}
+
+.hero h2 {
+  margin-top: 0.45rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+  color: var(--muted);
+}
+
+.lede {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  max-width: 68ch;
+}
+
+.section {
+  padding: 2rem 0;
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.pathway-card,
+.panel,
+.project-card {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 87%, white);
+  border-radius: 1rem;
+  padding: 1.2rem;
+}
+
+.pathway-card.music {
+  border-top: 6px solid var(--music);
+}
+
+.pathway-card.engineering {
+  border-top: 6px solid var(--engineering);
+}
+
+.card-kicker,
+.meta {
+  color: var(--muted);
+  margin: 0;
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.chips span,
+.chips a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.86rem;
+  background: white;
+}
+
+.btn {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.solid {
+  background: var(--ink);
+  color: white;
+}
+
+.btn.ghost {
+  border: 1px solid var(--line);
+  background: white;
+}
+
+.card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.pathway-hero.music {
+  border-left: 6px solid var(--music);
+  padding-left: 1.2rem;
+}
+
+.pathway-hero.engineering {
+  border-left: 6px solid var(--engineering);
+  padding-left: 1.2rem;
+}
+
+.skill-group + .skill-group,
+.experience-block + .experience-block {
+  margin-top: 1rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.status {
+  padding: 1rem;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, white 80%, var(--bg));
+  border: 1px solid var(--line);
+}
+
+.status.error {
+  border-color: #b3261e;
+}
+
+.footer {
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 84%, white);
+}
+
+.footer-inner {
+  padding: 1.2rem 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .split-grid,
+  .grid-two,
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding-top: 3rem;
+  }
+}
