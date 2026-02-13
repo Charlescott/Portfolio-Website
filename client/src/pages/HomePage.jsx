@@ -7,19 +7,27 @@ import { LoadingState } from '../components/LoadingState';
 export function HomePage() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadPortfolio = () => {
+    setIsLoading(true);
+    setError('');
     fetchPortfolio()
       .then(setData)
-      .catch(() => setError('Unable to load portfolio data. Please verify the API and database.'));
+      .catch(() => setError('Unable to load portfolio data. Check that the API server is running and try again.'))
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    loadPortfolio();
   }, []);
 
   if (error) {
-    return <ErrorState message={error} />;
+    return <ErrorState message={error} onRetry={loadPortfolio} />;
   }
 
-  if (!data) {
-    return <LoadingState />;
+  if (isLoading || !data) {
+    return <LoadingState message="Loading your portfolio overview..." />;
   }
 
   const { profile, pathways, links, education } = data;

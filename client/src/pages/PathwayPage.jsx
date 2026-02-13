@@ -7,19 +7,28 @@ import { LoadingState } from '../components/LoadingState';
 export function PathwayPage({ slug, accent }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadPathway = () => {
+    setIsLoading(true);
+    setError('');
+    setData(null);
     fetchPathway(slug)
       .then(setData)
-      .catch(() => setError('Unable to load this pathway right now.'));
+      .catch(() => setError('Unable to load this pathway right now. Please try again.'))
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    loadPathway();
   }, [slug]);
 
   if (error) {
-    return <ErrorState message={error} />;
+    return <ErrorState message={error} onRetry={loadPathway} />;
   }
 
-  if (!data) {
-    return <LoadingState />;
+  if (isLoading || !data) {
+    return <LoadingState message="Loading pathway details..." />;
   }
 
   return (

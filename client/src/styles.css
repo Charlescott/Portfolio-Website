@@ -108,7 +108,7 @@ li {
 }
 
 .section {
-  padding: 2rem 0;
+  padding: 2.4rem 0;
 }
 
 .split-grid {
@@ -225,8 +225,40 @@ li {
   border: 1px solid var(--line);
 }
 
+.status-wrap {
+  padding-top: 3rem;
+}
+
+.status.loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.status.loading p,
+.status.error p {
+  margin: 0;
+}
+
 .status.error {
   border-color: #b3261e;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.retry-btn {
+  margin-left: auto;
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--ink);
+  animation: spin 0.8s linear infinite;
 }
 
 .footer {
@@ -254,6 +286,12 @@ li {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 900px) {
   .split-grid,
   .grid-two,
@@ -263,5 +301,69 @@ li {
 
   .hero {
     padding-top: 3rem;
+  }
+
+  .section {
+    padding: 1.6rem 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    width: min(1120px, 94%);
+  }
+
+  .nav {
+    padding: 0.8rem 0;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .hero {
+    padding: 2.2rem 0 1.2rem;
+  }
+
+  .pathway-hero.music,
+  .pathway-hero.engineering {
+    padding-left: 0.8rem;
+  }
+
+  .pathway-card,
+  .panel,
+  .project-card {
+    padding: 1rem;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions .btn {
+    text-align: center;
+    width: 100%;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .status-wrap {
+    padding-top: 2rem;
+  }
+
+  .status.error {
+    display: flex;
+  }
+
+  .retry-btn {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
   }
 }

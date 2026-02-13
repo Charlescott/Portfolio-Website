@@ -10,11 +10,17 @@ dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173,http://localhost:5174';
+const ALLOWED_ORIGINS = CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
 
 app.use(
   cors({
-    origin: CLIENT_ORIGIN,
+    origin(origin, callback) {
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
   })
 );
 app.use(express.json());
@@ -61,7 +67,7 @@ if (fs.existsSync(clientIndexPath)) {
   });
 } else {
   app.get('/', (_req, res) => {
-    res.send('Portfolio API is running. Start the React dev server at http://localhost:5173');
+    res.send('Portfolio API is running. Start the React dev server at http://localhost:5173 or http://localhost:5174');
   });
 }
 
