@@ -83,6 +83,47 @@ li {
   animation: fade-up 0.5s ease;
 }
 
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1.8rem;
+  align-items: center;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-photo-wrap {
+  justify-self: end;
+  width: min(100%, 320px);
+}
+
+.hero-photo,
+.hero-photo-fallback {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 1.2rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 26px rgba(23, 26, 31, 0.12);
+}
+
+.hero-photo {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-photo-fallback {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, #d9e7eb 0%, #f2d4be 100%);
+  color: var(--ink);
+  font-weight: 600;
+  text-align: center;
+  padding: 1.2rem;
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -144,6 +185,58 @@ li {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.music-section-panel {
+  border-top: 6px solid var(--music);
+}
+
+.music-projects-grid {
+  margin-top: 1rem;
+}
+
+.lesson-inquiry-block {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--line);
+}
+
+.lesson-inquiry-text {
+  margin: 0 0 0.7rem;
+  font-weight: 600;
+}
+
+.private-lessons-layout {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+}
+
+.private-lessons-info {
+  border-top: 6px solid var(--music);
+}
+
+.lessons-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.lessons-form input,
+.lessons-form select,
+.lessons-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  padding: 0.6rem 0.7rem;
+  font: inherit;
+  background: white;
+}
+
+.lessons-form label {
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 .chips {
@@ -293,9 +386,20 @@ li {
 }
 
 @media (max-width: 900px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-photo-wrap {
+    justify-self: start;
+    width: min(72vw, 280px);
+  }
+
   .split-grid,
   .grid-two,
-  .projects-grid {
+  .projects-grid,
+  .private-lessons-layout {
     grid-template-columns: 1fr;
   }
 

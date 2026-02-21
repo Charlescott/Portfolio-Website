@@ -8,6 +8,7 @@ export function HomePage() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [showHeadshotFallback, setShowHeadshotFallback] = useState(false);
 
   const loadPortfolio = () => {
     setIsLoading(true);
@@ -34,15 +35,32 @@ export function HomePage() {
 
   return (
     <>
-      <section className="hero container">
-        <p className="eyebrow">Portfolio</p>
-        <h1>{profile.full_name}</h1>
-        <h2>{profile.title}</h2>
-        <p className="lede">{profile.transition_story}</p>
-        <div className="chips">
-          <span>{profile.location}</span>
-          <a href={`mailto:${profile.email}`}>{profile.email}</a>
-          <a href={`tel:${profile.phone.replace(/[^0-9]/g, '')}`}>{profile.phone}</a>
+      <section className="hero container hero-layout">
+        <div className="hero-copy">
+          <p className="eyebrow">Portfolio</p>
+          <h1>{profile.full_name}</h1>
+          <h2>{profile.title}</h2>
+          <p className="lede">{profile.transition_story}</p>
+          <div className="chips">
+            <span>{profile.location}</span>
+            <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            <a href={`tel:${profile.phone.replace(/[^0-9]/g, '')}`}>{profile.phone}</a>
+          </div>
+        </div>
+        <div className="hero-photo-wrap">
+          {!showHeadshotFallback && (
+            <img
+              src="/headshot.jpg"
+              alt={`${profile.full_name} headshot`}
+              className="hero-photo"
+              onError={() => setShowHeadshotFallback(true)}
+            />
+          )}
+          {showHeadshotFallback && (
+            <div className="hero-photo-fallback" aria-hidden="true">
+              <span>{profile.full_name}</span>
+            </div>
+          )}
         </div>
       </section>
 

@@ -8,6 +8,7 @@ export function PathwayPage({ slug, accent }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const isMusicPathway = slug === 'music';
 
   const loadPathway = () => {
     setIsLoading(true);
@@ -47,73 +48,156 @@ export function PathwayPage({ slug, accent }) {
         </div>
       </section>
 
-      <section className="container section grid-two">
-        <article className="panel">
-          <h3>Core Skills</h3>
-          {data.skills.map((skill) => (
-            <div key={skill.category} className="skill-group">
-              <h4>{skill.category}</h4>
-              <div className="chips">
-                {skill.items.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </article>
-
-        <article className="panel">
-          <h3>Experience Highlights</h3>
-          {data.experiences.map((experience) => (
-            <div key={`${experience.role}-${experience.period_label}`} className="experience-block">
-              <h4>{experience.role}</h4>
-              <p className="meta">
-                {experience.organization} | {experience.period_label}
+      {isMusicPathway && (
+        <>
+          <section className="container section">
+            <h3>Education</h3>
+            <article className="panel music-section-panel">
+              <p>
+                Percussion instruction is structured around technical development, rhythmic
+                literacy, musical confidence, and performance readiness.
               </p>
-              <ul>
-                {experience.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </article>
-      </section>
-
-      <section className="container section">
-        <h3>Featured Work</h3>
-        <div className="projects-grid">
-          {data.projects.map((project) => (
-            <article key={`${project.name}-${project.period_label}`} className="project-card">
-              <p className="meta">{project.period_label}</p>
-              <h4>{project.name}</h4>
-              <p>{project.summary}</p>
-              <div className="chips">
-                {project.stack.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-              <ul>
-                {project.highlights.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-              <div className="card-actions">
-                {project.repo_url && (
-                  <a href={project.repo_url} target="_blank" rel="noreferrer" className="btn ghost">
-                    Repository
-                  </a>
-                )}
-                {project.live_url && (
-                  <a href={project.live_url} target="_blank" rel="noreferrer" className="btn ghost">
-                    Live / Reference
-                  </a>
-                )}
+              {data.experiences.map((experience) => (
+                <div key={`${experience.role}-${experience.period_label}`} className="experience-block">
+                  <h4>{experience.role}</h4>
+                  <p className="meta">
+                    {experience.organization} | {experience.period_label}
+                  </p>
+                  <ul>
+                    {experience.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <div className="lesson-inquiry-block">
+                <p className="lesson-inquiry-text">Interested in lessons?</p>
+                <Link to="/music/private-lessons" className="btn solid">
+                  Private Lessons Inquiry
+                </Link>
               </div>
             </article>
-          ))}
-        </div>
-      </section>
+          </section>
+
+          <section className="container section">
+            <h3>Music Production and Composition</h3>
+            <article className="panel music-section-panel">
+              <p>
+                Production and composition work focused on arrangement quality, tone shaping, and
+                intentional musical storytelling.
+              </p>
+              <div className="projects-grid music-projects-grid">
+                {data.projects.map((project) => (
+                  <article key={`${project.name}-${project.period_label}`} className="project-card">
+                    <p className="meta">{project.period_label}</p>
+                    <h4>{project.name}</h4>
+                    <p>{project.summary}</p>
+                    <div className="chips">
+                      {project.stack.map((item) => (
+                        <span key={item}>{item}</span>
+                      ))}
+                    </div>
+                    <ul>
+                      {project.highlights.map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+                    <div className="card-actions">
+                      {project.repo_url && (
+                        <a href={project.repo_url} target="_blank" rel="noreferrer" className="btn ghost">
+                          Repository
+                        </a>
+                      )}
+                      {project.live_url && (
+                        <a href={project.live_url} target="_blank" rel="noreferrer" className="btn ghost">
+                          Live / Reference
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="card-actions">
+                <a href={data.primary_link_url} target="_blank" rel="noreferrer" className="btn ghost">
+                  Listen to Music Portfolio
+                </a>
+              </div>
+            </article>
+          </section>
+        </>
+      )}
+
+      {!isMusicPathway && (
+        <>
+          <section className="container section grid-two">
+            <article className="panel">
+              <h3>Core Skills</h3>
+              {data.skills.map((skill) => (
+                <div key={skill.category} className="skill-group">
+                  <h4>{skill.category}</h4>
+                  <div className="chips">
+                    {skill.items.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </article>
+
+            <article className="panel">
+              <h3>Experience Highlights</h3>
+              {data.experiences.map((experience) => (
+                <div key={`${experience.role}-${experience.period_label}`} className="experience-block">
+                  <h4>{experience.role}</h4>
+                  <p className="meta">
+                    {experience.organization} | {experience.period_label}
+                  </p>
+                  <ul>
+                    {experience.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </article>
+          </section>
+
+          <section className="container section">
+            <h3>Featured Work</h3>
+            <div className="projects-grid">
+              {data.projects.map((project) => (
+                <article key={`${project.name}-${project.period_label}`} className="project-card">
+                  <p className="meta">{project.period_label}</p>
+                  <h4>{project.name}</h4>
+                  <p>{project.summary}</p>
+                  <div className="chips">
+                    {project.stack.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
+                  <ul>
+                    {project.highlights.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                  <div className="card-actions">
+                    {project.repo_url && (
+                      <a href={project.repo_url} target="_blank" rel="noreferrer" className="btn ghost">
+                        Repository
+                      </a>
+                    )}
+                    {project.live_url && (
+                      <a href={project.live_url} target="_blank" rel="noreferrer" className="btn ghost">
+                        Live / Reference
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
     </>
   );
 }
