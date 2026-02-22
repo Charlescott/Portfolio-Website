@@ -187,6 +187,35 @@ li {
   gap: 1rem;
 }
 
+.music-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.music-pillar.education {
+  border-top: 6px solid var(--music);
+}
+
+.music-pillar.composition {
+  border-top: 6px solid var(--music);
+}
+
+.music-detail-page .card-actions {
+  margin-top: 1.4rem;
+}
+
+.music-detail-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.music-detail-panel {
+  border-top: 4px solid color-mix(in srgb, var(--music) 75%, var(--line));
+}
+
 .music-section-panel {
   border-top: 6px solid var(--music);
 }
@@ -399,6 +428,8 @@ li {
   .split-grid,
   .grid-two,
   .projects-grid,
+  .music-pillars-grid,
+  .music-detail-grid,
   .private-lessons-layout {
     grid-template-columns: 1fr;
   }

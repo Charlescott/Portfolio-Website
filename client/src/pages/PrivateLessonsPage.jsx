@@ -23,6 +23,23 @@ export function PrivateLessonsPage() {
 
   const onSubmit = (event) => {
     event.preventDefault();
+    const subject = 'Private Lessons Inquiry';
+    const body = [
+      `Full name: ${form.fullName}`,
+      `Email: ${form.email}`,
+      `Phone: ${form.phone}`,
+      `Student level: ${form.studentLevel}`,
+      `Preferred format: ${form.lessonFormat}`,
+      `Preferred lesson length: ${form.lessonLength} minutes`,
+      '',
+      'Primary goals:',
+      form.goals,
+      '',
+      'Weekly availability:',
+      form.availability,
+    ].join('\n');
+    const mailtoUrl = `mailto:scottfairdosi@yahoo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
     setSubmitted(true);
   };
 
