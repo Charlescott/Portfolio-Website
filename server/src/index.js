@@ -52,6 +52,76 @@ app.get('/api/pathways/:slug', async (req, res) => {
   }
 });
 
+const INQUIRY_TO_EMAIL = process.env.INQUIRY_TO_EMAIL || 'scottfairdosi@yahoo.com';
+const INQUIRY_FROM_EMAIL = process.env.INQUIRY_FROM_EMAIL || process.env.SMTP_USER || INQUIRY_TO_EMAIL;
+
+async function createTransporter() {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+  if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
+    return null;
+  }
+
+  let nodemailer;
+  try {
+    ({ default: nodemailer } = await import('nodemailer'));
+  } catch (_error) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: Number(SMTP_PORT),
+    secure: Number(SMTP_PORT) === 465,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
+}
+
+app.post('/api/inquiries', async (req, res) => {
+  const { inquiryType, formTitle, subject, fields } = req.body ?? {};
+
+  if (!inquiryType || !formTitle || !subject || !Array.isArray(fields) || fields.length === 0) {
+    return res.status(400).json({ error: 'Invalid inquiry payload' });
+  }
+
+  const transporter = await createTransporter();
+  if (!transporter) {
+    return res.status(500).json({ error: 'Email service is not configured' });
+  }
+
+  const cleanedFields = fields
+    .filter((field) => field && typeof field.label === 'string' && typeof field.value === 'string')
+    .map((field) => ({ label: field.label.trim(), value: field.value.trim() }));
+
+  if (cleanedFields.length === 0) {
+    return res.status(400).json({ error: 'Inquiry fields are required' });
+  }
+
+  const lines = [
+    `Form: ${formTitle}`,
+    `Type: ${inquiryType}`,
+    `Submitted: ${new Date().toISOString()}`,
+    '',
+    ...cleanedFields.flatMap(({ label, value }) => [label, value || '(not provided)', '']),
+  ];
+
+  try {
+    await transporter.sendMail({
+      from: INQUIRY_FROM_EMAIL,
+      to: INQUIRY_TO_EMAIL,
+      subject,
+      text: lines.join('\n'),
+      replyTo: cleanedFields.find((field) => field.label.toLowerCase() === 'email')?.value || undefined,
+    });
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('Failed to send inquiry email:', error);
+    return res.status(500).json({ error: 'Failed to send inquiry' });
+  }
+});
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.resolve(__dirname, '../../client/dist');

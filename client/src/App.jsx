@@ -8,6 +8,8 @@ import { PrivateLessonsPage } from './pages/PrivateLessonsPage';
 import { MusicLandingPage } from './pages/MusicLandingPage';
 import { MusicEducationPage } from './pages/MusicEducationPage';
 import { MusicCompositionPage } from './pages/MusicCompositionPage';
+import { MasterclassInquiryPage } from './pages/MasterclassInquiryPage';
+import { CommissionInquiryPage } from './pages/CommissionInquiryPage';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/music/education" element={<MusicEducationPage />} />
           <Route path="/music/composition" element={<MusicCompositionPage />} />
           <Route path="/music/private-lessons" element={<PrivateLessonsPage />} />
+          <Route path="/music/masterclass-inquiry" element={<MasterclassInquiryPage />} />
+          <Route path="/music/commission-inquiry" element={<CommissionInquiryPage />} />
           <Route path="/engineering" element={<PathwayPage slug="engineering" accent="engineering" />} />
           <Route path="/software" element={<Navigate to="/engineering" replace />} />
           <Route path="*" element={<NotFoundPage />} />

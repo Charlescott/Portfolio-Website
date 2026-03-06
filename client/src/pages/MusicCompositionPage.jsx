@@ -36,9 +36,9 @@ export function MusicCompositionPage() {
         <a href="https://soundcloud.com/scottfairdosi" target="_blank" rel="noreferrer" className="btn solid">
           Listen to Music
         </a>
-        <a href="mailto:scottfairdosi@yahoo.com?subject=Composition%20Inquiry" className="btn ghost">
-          Inquire About Composition
-        </a>
+        <Link to="/music/commission-inquiry" className="btn ghost">
+          Commission Original Music
+        </Link>
         <Link to="/music" className="btn ghost">
           Back to Music
         </Link>

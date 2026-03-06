@@ -65,9 +65,9 @@ export function MusicEducationPage() {
         <Link to="/music/private-lessons" className="btn solid">
           Sign Up for Private Lessons
         </Link>
-        <a href="mailto:scottfairdosi@yahoo.com?subject=Masterclass%20Request" className="btn ghost">
+        <Link to="/music/masterclass-inquiry" className="btn ghost">
           Directors Request a Masterclass
-        </a>
+        </Link>
       </div>
     </section>
   );

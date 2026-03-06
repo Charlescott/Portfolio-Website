@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { submitInquiry } from '../api';
 
 const initialForm = {
   fullName: '',
@@ -15,32 +16,42 @@ const initialForm = {
 export function PrivateLessonsPage() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const onChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    const subject = 'Private Lessons Inquiry';
-    const body = [
-      `Full name: ${form.fullName}`,
-      `Email: ${form.email}`,
-      `Phone: ${form.phone}`,
-      `Student level: ${form.studentLevel}`,
-      `Preferred format: ${form.lessonFormat}`,
-      `Preferred lesson length: ${form.lessonLength} minutes`,
-      '',
-      'Primary goals:',
-      form.goals,
-      '',
-      'Weekly availability:',
-      form.availability,
-    ].join('\n');
-    const mailtoUrl = `mailto:scottfairdosi@yahoo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
-    setSubmitted(true);
+    setSubmitError('');
+    setIsSubmitting(true);
+
+    try {
+      await submitInquiry({
+        inquiryType: 'private-lessons',
+        formTitle: 'Private Lessons Inquiry',
+        subject: 'Private Lessons Inquiry',
+        fields: [
+          { label: 'Full Name', value: form.fullName },
+          { label: 'Email', value: form.email },
+          { label: 'Phone', value: form.phone },
+          { label: 'Student Level', value: form.studentLevel },
+          { label: 'Preferred Format', value: form.lessonFormat },
+          { label: 'Preferred Lesson Length', value: `${form.lessonLength} minutes` },
+          { label: 'Primary Goals', value: form.goals },
+          { label: 'Weekly Availability', value: form.availability },
+        ],
+      });
+      setSubmitted(true);
+      setForm(initialForm);
+    } catch (_error) {
+      setSubmitError('We could not submit your inquiry right now. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -167,8 +178,14 @@ export function PrivateLessonsPage() {
                 required
               />
 
-              <button type="submit" className="btn solid">
-                Submit Inquiry
+              {submitError ? (
+                <div className="status error">
+                  <p>{submitError}</p>
+                </div>
+              ) : null}
+
+              <button type="submit" className="btn solid" disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
               </button>
             </form>
           )}
