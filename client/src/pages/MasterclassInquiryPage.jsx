@@ -20,6 +20,8 @@ export function MasterclassInquiryPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  const requiredLabels = new Set(['Director Name', 'School/Organization', 'Email', 'Phone']);
+
   const onChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -31,21 +33,26 @@ export function MasterclassInquiryPage() {
     setIsSubmitting(true);
 
     try {
+      const fields = [
+        { label: 'Director Name', value: form.directorName },
+        { label: 'School/Organization', value: form.schoolOrOrganization },
+        { label: 'Email', value: form.email },
+        { label: 'Phone', value: form.phone },
+        { label: 'Ensemble Type', value: form.ensembleType },
+        { label: 'Student Level', value: form.studentLevel },
+        { label: 'Preferred Dates', value: form.preferredDates },
+        { label: 'Masterclass Goals', value: form.goals },
+        { label: 'Additional Notes', value: form.notes },
+      ];
+
       await submitInquiry({
         inquiryType: 'masterclass',
         formTitle: 'Director Masterclass Request',
         subject: 'Director Masterclass Request',
-        fields: [
-          { label: 'Director Name', value: form.directorName },
-          { label: 'School/Organization', value: form.schoolOrOrganization },
-          { label: 'Email', value: form.email },
-          { label: 'Phone', value: form.phone },
-          { label: 'Ensemble Type', value: form.ensembleType },
-          { label: 'Student Level', value: form.studentLevel },
-          { label: 'Preferred Dates', value: form.preferredDates },
-          { label: 'Masterclass Goals', value: form.goals },
-          { label: 'Additional Notes', value: form.notes },
-        ],
+        fields: fields.filter((field) => {
+          if (requiredLabels.has(field.label)) return true;
+          return String(field.value || '').trim().length > 0;
+        }),
       });
       setSubmitted(true);
       setForm(initialForm);
@@ -88,10 +95,14 @@ export function MasterclassInquiryPage() {
             </div>
           ) : (
             <form className="lessons-form" onSubmit={onSubmit}>
-              <label htmlFor="directorName">Director name</label>
+              <label htmlFor="directorName">
+                Director name<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input id="directorName" name="directorName" value={form.directorName} onChange={onChange} required />
 
-              <label htmlFor="schoolOrOrganization">School or organization</label>
+              <label htmlFor="schoolOrOrganization">
+                School or organization<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input
                 id="schoolOrOrganization"
                 name="schoolOrOrganization"
@@ -100,17 +111,21 @@ export function MasterclassInquiryPage() {
                 required
               />
 
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">
+                Email<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input id="email" name="email" type="email" value={form.email} onChange={onChange} required />
 
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">
+                Phone<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input id="phone" name="phone" type="tel" value={form.phone} onChange={onChange} required />
 
               <label htmlFor="ensembleType">Ensemble type</label>
-              <input id="ensembleType" name="ensembleType" value={form.ensembleType} onChange={onChange} required />
+              <input id="ensembleType" name="ensembleType" value={form.ensembleType} onChange={onChange} />
 
               <label htmlFor="studentLevel">Student level</label>
-              <input id="studentLevel" name="studentLevel" value={form.studentLevel} onChange={onChange} required />
+              <input id="studentLevel" name="studentLevel" value={form.studentLevel} onChange={onChange} />
 
               <label htmlFor="preferredDates">Preferred dates / windows</label>
               <textarea
@@ -119,11 +134,10 @@ export function MasterclassInquiryPage() {
                 value={form.preferredDates}
                 onChange={onChange}
                 rows={2}
-                required
               />
 
               <label htmlFor="goals">Masterclass goals</label>
-              <textarea id="goals" name="goals" value={form.goals} onChange={onChange} rows={4} required />
+              <textarea id="goals" name="goals" value={form.goals} onChange={onChange} rows={4} />
 
               <label htmlFor="notes">Additional notes</label>
               <textarea id="notes" name="notes" value={form.notes} onChange={onChange} rows={3} />

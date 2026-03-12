@@ -19,6 +19,8 @@ export function PrivateLessonsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  const requiredLabels = new Set(['Full Name', 'Email', 'Phone']);
+
   const onChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -30,20 +32,25 @@ export function PrivateLessonsPage() {
     setIsSubmitting(true);
 
     try {
+      const fields = [
+        { label: 'Full Name', value: form.fullName },
+        { label: 'Email', value: form.email },
+        { label: 'Phone', value: form.phone },
+        { label: 'Student Level', value: form.studentLevel },
+        { label: 'Preferred Format', value: form.lessonFormat },
+        { label: 'Preferred Lesson Length', value: `${form.lessonLength} minutes` },
+        { label: 'Primary Goals', value: form.goals },
+        { label: 'Weekly Availability', value: form.availability },
+      ];
+
       await submitInquiry({
         inquiryType: 'private-lessons',
         formTitle: 'Private Lessons Inquiry',
         subject: 'Private Lessons Inquiry',
-        fields: [
-          { label: 'Full Name', value: form.fullName },
-          { label: 'Email', value: form.email },
-          { label: 'Phone', value: form.phone },
-          { label: 'Student Level', value: form.studentLevel },
-          { label: 'Preferred Format', value: form.lessonFormat },
-          { label: 'Preferred Lesson Length', value: `${form.lessonLength} minutes` },
-          { label: 'Primary Goals', value: form.goals },
-          { label: 'Weekly Availability', value: form.availability },
-        ],
+        fields: fields.filter((field) => {
+          if (requiredLabels.has(field.label)) return true;
+          return String(field.value || '').trim().length > 0;
+        }),
       });
       setSubmitted(true);
       setForm(initialForm);
@@ -88,7 +95,9 @@ export function PrivateLessonsPage() {
             </div>
           ) : (
             <form className="lessons-form" onSubmit={onSubmit}>
-              <label htmlFor="fullName">Full name</label>
+              <label htmlFor="fullName">
+                Full name<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input
                 id="fullName"
                 name="fullName"
@@ -98,7 +107,9 @@ export function PrivateLessonsPage() {
                 required
               />
 
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">
+                Email<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input
                 id="email"
                 name="email"
@@ -108,7 +119,9 @@ export function PrivateLessonsPage() {
                 required
               />
 
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">
+                Phone<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input
                 id="phone"
                 name="phone"
@@ -124,7 +137,6 @@ export function PrivateLessonsPage() {
                 name="studentLevel"
                 value={form.studentLevel}
                 onChange={onChange}
-                required
               >
                 <option value="">Select level</option>
                 <option value="middle-school">Middle School</option>
@@ -138,7 +150,6 @@ export function PrivateLessonsPage() {
                 name="lessonFormat"
                 value={form.lessonFormat}
                 onChange={onChange}
-                required
               >
                 <option value="in-person">In-Person</option>
                 <option value="zoom">Zoom</option>
@@ -151,7 +162,6 @@ export function PrivateLessonsPage() {
                 name="lessonLength"
                 value={form.lessonLength}
                 onChange={onChange}
-                required
               >
                 <option value="60">60 minutes</option>
                 <option value="45">45 minutes</option>
@@ -165,7 +175,6 @@ export function PrivateLessonsPage() {
                 value={form.goals}
                 onChange={onChange}
                 rows={4}
-                required
               />
 
               <label htmlFor="availability">Weekly availability</label>
@@ -175,7 +184,6 @@ export function PrivateLessonsPage() {
                 value={form.availability}
                 onChange={onChange}
                 rows={3}
-                required
               />
 
               {submitError ? (
