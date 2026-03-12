@@ -51,8 +51,8 @@ export function CommissionInquiryPage() {
       });
       setSubmitted(true);
       setForm(initialForm);
-    } catch (_error) {
-      setSubmitError('We could not submit your inquiry right now. Please try again.');
+    } catch (error) {
+      setSubmitError(error?.message || 'We could not submit your inquiry right now. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

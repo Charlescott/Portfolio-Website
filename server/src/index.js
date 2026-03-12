@@ -54,6 +54,11 @@ app.get('/api/pathways/:slug', async (req, res) => {
 
 const INQUIRY_TO_EMAIL = process.env.INQUIRY_TO_EMAIL || 'scottfairdosi@yahoo.com';
 const INQUIRY_FROM_EMAIL = process.env.INQUIRY_FROM_EMAIL || process.env.SMTP_USER || INQUIRY_TO_EMAIL;
+const INQUIRY_FROM_NAME = process.env.INQUIRY_FROM_NAME || 'Portfolio Website';
+const ALLOW_INQUIRY_FALLBACK =
+  (process.env.ALLOW_INQUIRY_FALLBACK || '').toLowerCase() === 'true' ||
+  (process.env.NODE_ENV || '').toLowerCase() !== 'production';
+const INQUIRY_FALLBACK_FILE = process.env.INQUIRY_FALLBACK_FILE || '';
 
 async function createTransporter() {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
@@ -79,16 +84,28 @@ async function createTransporter() {
   });
 }
 
+function resolveInquiryFallbackFilePath() {
+  if (INQUIRY_FALLBACK_FILE) return INQUIRY_FALLBACK_FILE;
+
+  const tempDir = process.env.TMPDIR || process.env.TEMP || process.env.TMP;
+  if (tempDir) return path.join(tempDir, 'portfolio-inquiries.jsonl');
+
+  return path.join(process.cwd(), 'data', 'inquiries.jsonl');
+}
+
+async function persistInquiryFallback(payload) {
+  const fallbackFile = resolveInquiryFallbackFilePath();
+  const fallbackDir = path.dirname(fallbackFile);
+
+  await fs.promises.mkdir(fallbackDir, { recursive: true });
+  await fs.promises.appendFile(fallbackFile, `${JSON.stringify(payload)}\n`, 'utf8');
+}
+
 app.post('/api/inquiries', async (req, res) => {
   const { inquiryType, formTitle, subject, fields } = req.body ?? {};
 
   if (!inquiryType || !formTitle || !subject || !Array.isArray(fields) || fields.length === 0) {
     return res.status(400).json({ error: 'Invalid inquiry payload' });
-  }
-
-  const transporter = await createTransporter();
-  if (!transporter) {
-    return res.status(500).json({ error: 'Email service is not configured' });
   }
 
   const cleanedFields = fields
@@ -99,23 +116,52 @@ app.post('/api/inquiries', async (req, res) => {
     return res.status(400).json({ error: 'Inquiry fields are required' });
   }
 
+  const replyTo =
+    cleanedFields.find((field) => field.label.toLowerCase() === 'email')?.value || undefined;
+
   const lines = [
+    'You received a new inquiry from your portfolio site.',
+    '',
     `Form: ${formTitle}`,
     `Type: ${inquiryType}`,
     `Submitted: ${new Date().toISOString()}`,
     '',
     ...cleanedFields.flatMap(({ label, value }) => [label, value || '(not provided)', '']),
+    '---',
+    'This message was sent automatically. Reply to contact the submitter.',
   ];
+
+  const transporter = await createTransporter();
+  if (!transporter) {
+    if (!ALLOW_INQUIRY_FALLBACK) {
+      return res.status(503).json({ error: 'Inquiry email service is not configured' });
+    }
+
+    try {
+      await persistInquiryFallback({
+        inquiryType,
+        formTitle,
+        subject,
+        replyTo,
+        fields: cleanedFields,
+        submittedAt: new Date().toISOString(),
+      });
+      return res.status(202).json({ ok: true, delivery: 'stored' });
+    } catch (error) {
+      console.error('Failed to persist inquiry fallback:', error);
+      return res.status(500).json({ error: 'Inquiry service is unavailable' });
+    }
+  }
 
   try {
     await transporter.sendMail({
-      from: INQUIRY_FROM_EMAIL,
+      from: { name: INQUIRY_FROM_NAME, address: INQUIRY_FROM_EMAIL },
       to: INQUIRY_TO_EMAIL,
       subject,
       text: lines.join('\n'),
-      replyTo: cleanedFields.find((field) => field.label.toLowerCase() === 'email')?.value || undefined,
+      replyTo,
     });
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, delivery: 'email' });
   } catch (error) {
     console.error('Failed to send inquiry email:', error);
     return res.status(500).json({ error: 'Failed to send inquiry' });
