@@ -21,6 +21,8 @@ export function CommissionInquiryPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  const requiredLabels = new Set(['Full Name', 'Email', 'Phone']);
+
   const onChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -32,22 +34,27 @@ export function CommissionInquiryPage() {
     setIsSubmitting(true);
 
     try {
+      const fields = [
+        { label: 'Full Name', value: form.fullName },
+        { label: 'Organization/Client', value: form.organization },
+        { label: 'Email', value: form.email },
+        { label: 'Phone', value: form.phone },
+        { label: 'Project Type', value: form.projectType },
+        { label: 'Intended Use', value: form.intendedUse },
+        { label: 'Timeline', value: form.timeline },
+        { label: 'Budget Range', value: form.budgetRange },
+        { label: 'Creative Brief', value: form.creativeBrief },
+        { label: 'Reference Tracks', value: form.referenceTracks },
+      ];
+
       await submitInquiry({
         inquiryType: 'composition-commission',
         formTitle: 'Music Commission Inquiry',
         subject: 'Music Commission Inquiry',
-        fields: [
-          { label: 'Full Name', value: form.fullName },
-          { label: 'Organization/Client', value: form.organization },
-          { label: 'Email', value: form.email },
-          { label: 'Phone', value: form.phone },
-          { label: 'Project Type', value: form.projectType },
-          { label: 'Intended Use', value: form.intendedUse },
-          { label: 'Timeline', value: form.timeline },
-          { label: 'Budget Range', value: form.budgetRange },
-          { label: 'Creative Brief', value: form.creativeBrief },
-          { label: 'Reference Tracks', value: form.referenceTracks },
-        ],
+        fields: fields.filter((field) => {
+          if (requiredLabels.has(field.label)) return true;
+          return String(field.value || '').trim().length > 0;
+        }),
       });
       setSubmitted(true);
       setForm(initialForm);
@@ -90,29 +97,35 @@ export function CommissionInquiryPage() {
             </div>
           ) : (
             <form className="lessons-form" onSubmit={onSubmit}>
-              <label htmlFor="fullName">Full name</label>
+              <label htmlFor="fullName">
+                Full name<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input id="fullName" name="fullName" value={form.fullName} onChange={onChange} required />
 
-              <label htmlFor="organization">Organization or client (optional)</label>
+              <label htmlFor="organization">Organization or client</label>
               <input id="organization" name="organization" value={form.organization} onChange={onChange} />
 
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">
+                Email<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
               <input id="email" name="email" type="email" value={form.email} onChange={onChange} required />
 
-              <label htmlFor="phone">Phone (optional)</label>
-              <input id="phone" name="phone" type="tel" value={form.phone} onChange={onChange} />
+              <label htmlFor="phone">
+                Phone<span className="required-asterisk" aria-hidden="true">*</span>
+              </label>
+              <input id="phone" name="phone" type="tel" value={form.phone} onChange={onChange} required />
 
               <label htmlFor="projectType">Project type</label>
-              <input id="projectType" name="projectType" value={form.projectType} onChange={onChange} required />
+              <input id="projectType" name="projectType" value={form.projectType} onChange={onChange} />
 
               <label htmlFor="intendedUse">Intended use</label>
-              <input id="intendedUse" name="intendedUse" value={form.intendedUse} onChange={onChange} required />
+              <input id="intendedUse" name="intendedUse" value={form.intendedUse} onChange={onChange} />
 
               <label htmlFor="timeline">Timeline</label>
-              <textarea id="timeline" name="timeline" value={form.timeline} onChange={onChange} rows={2} required />
+              <textarea id="timeline" name="timeline" value={form.timeline} onChange={onChange} rows={2} />
 
               <label htmlFor="budgetRange">Budget range</label>
-              <input id="budgetRange" name="budgetRange" value={form.budgetRange} onChange={onChange} required />
+              <input id="budgetRange" name="budgetRange" value={form.budgetRange} onChange={onChange} />
 
               <label htmlFor="creativeBrief">Creative brief</label>
               <textarea
@@ -121,10 +134,9 @@ export function CommissionInquiryPage() {
                 value={form.creativeBrief}
                 onChange={onChange}
                 rows={4}
-                required
               />
 
-              <label htmlFor="referenceTracks">Reference tracks / links (optional)</label>
+              <label htmlFor="referenceTracks">Reference tracks / links</label>
               <textarea
                 id="referenceTracks"
                 name="referenceTracks"
