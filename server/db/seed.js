@@ -30,7 +30,7 @@ async function seed() {
       '832-520-6172',
       'ScottFairdosi@yahoo.com',
       'Full stack web developer with React, Node.js, Express, and PostgreSQL experience, plus 8+ years leading high-pressure projects with clear communication and strong systems thinking.',
-      'I am transitioning from leading music programs to building reliable software products. The same discipline I used as a band director now drives how I design, debug, and ship full-stack applications.'
+      'Before becoming a software developer, I was leading music programs. The same discipline I used as a band director now drives how I design, debug, and ship full-stack applications.'
     ]
   );
 
